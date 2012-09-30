@@ -5,8 +5,8 @@ function Yc = plant(num)
 %
 % Parameters
 % ----------
-% num : integer, {1, 2, 3}
-%   A number between 1 and 3 corresponding to the three plants.
+% num : integer, {1, 2, 3, 4}
+%   A number between 1 and 4 corresponding to the four plants.
 %
 % Returns
 % -------
@@ -14,6 +14,7 @@ function Yc = plant(num)
 %   1 : 1 / s
 %   2 : 1 / s(s + 1)
 %   3 : 1 / s(s + 0.2)
+%   4 : 10 / (s + 10)
 
 if num == 1;
     Yc = tf(1, [1, 0]);
@@ -21,4 +22,6 @@ elseif num == 2;
     Yc = tf(1, [1, 1, 0]);
 elseif num == 3;
     Yc = tf(1, [1, 0.2, 0]);
+elseif num == 4;
+    Yc = tf(10.0, [1.0, 10.0]);
 end

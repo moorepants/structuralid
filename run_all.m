@@ -1,4 +1,4 @@
-for i = 1:3
+for i = 1:4
     for j = 0:1
         if j == 0
             kay = 'no';

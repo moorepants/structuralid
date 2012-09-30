@@ -1,2 +1,19 @@
 These files attempt to identify the gains in the structural human operator
 control model for simple line tracking tasks.
+
+To run, download the code:
+
+$ git clone git://github.com/moorepants/structuralid.git
+$ cd structuralid
+
+Then get the data and extract it to the data directory:
+
+$ wget http://figshare.com/media/download/98814/100241 -O structuralid-data.tar.bz2
+$ tar -xjf structuralid-data.tar.bz2
+
+Now open Matlab and execute `run_all.m`
+
+>> run_all
+
+The plots are generated in the `plots` directory and the results are printed to
+the terminal.

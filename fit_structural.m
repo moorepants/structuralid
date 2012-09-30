@@ -29,14 +29,8 @@ arxmod.Name = sprintf('Best ARX [na=%u, nb=%u, nk=%u]', best);
 display(arxmod.Name)
 
 % build a grey box model
-pars = [4.85, 14.5, 12.3    % k1
-        35.85, 7.5, 7.08    % k2
-        20.0, 1.0, 0.2      % k3
-        0.2, 0.2, 0.2       % tau
-        0.707, 0.707, 0.707 % zetanm
-        10.0, 10.0, 10.0    % wnm
-        0.707, 0.707, 0.707 % zetafs
-        65.0, 65.0, 65.0];  % wfs
+pars = importdata('data/initial_parameters.csv');
+pars = pars.data(:, 2:end)';
 
 aux.timeDelay = true;
 aux.plant = modelNum;
@@ -56,17 +50,18 @@ else
 end
 
 display(sprintf('The order of the closed loop system is %u.', size(mod.A, 1)))
-display(sprintf('The gain guesses: k1=%f, k2=%f, k3=%f', mod.par(1:3)))
+display(sprintf('The gain guesses: k1=%f, k2=%f, k3=%f, k4=%f', mod.par(1:4)))
 
 fit = pem(idDat, mod, ...
-          'FixedParameter', 4:8, ...
+          'FixedParameter', 5:9, ...
           'Focus', 'Stability');
 fit.Name = 'Structural Best Fit';
-uncert = diag(fit.cov(1:3, 1:3));
-display(sprintf('The identified gains: k1=%f+\\-%f, k2=%f+\\-%f, k3=%f+\\-%f', ...
+uncert = diag(fit.cov(1:4, 1:4));
+display(sprintf('The identified gains: k1=%f+\\-%f, k2=%f+\\-%f, k3=%f+\\-%f, k4=%f+\\-%f\n', ...
     fit.par(1), uncert(1), ...
     fit.par(2), uncert(2), ...
-    fit.par(3), uncert(3)))
+    fit.par(3), uncert(3), ...
+    fit.par(4), uncert(4)))
 
 % create a plot directory if one doesn't already exist
 if exist('plots/', 'dir') ~= 7
