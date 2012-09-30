@@ -1,6 +1,15 @@
 These files attempt to identify the gains in the structural human operator
 control model for simple line tracking tasks.
 
+Dependencies
+------------
+- Matlab 7.10.0.499 (R2010a)
+- Control System Toolbox Version 8.5 (R2010a)
+- Matlab System Identification Toolbox Version 7.4 (R2010a)
+
+Use
+---
+
 To run, download the code:
 
 $ git clone git://github.com/moorepants/structuralid.git
