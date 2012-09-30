@@ -1,4 +1,22 @@
 function fit = fit_structural(filename, estimateK)
+% function fit = fit_structural(filename, estimateK)
+%
+% Returns the optimal structural model for a given data set.
+%
+% Parameters
+% ----------
+% filename : char
+%   The filename of the file in the `data` folder. For example
+%   `jason_1.mat`.
+% estimateK : logical
+%   If true process and measurement noise will be estimated in terms of a
+%   Kalman gain matrix.
+%
+% Returns
+% -------
+% fit : idgrey
+%   The optimal model.
+
 warning off
 modelNum = str2num(filename(7));
 raw = load(['data/' filename]);

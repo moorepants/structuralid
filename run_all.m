@@ -1,3 +1,8 @@
+function run_all()
+% function run_all()
+%
+% Runs all of the identifications.
+
 for i = 1:4
     for j = 0:1
         if j == 0

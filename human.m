@@ -1,7 +1,26 @@
 function Yp = human(pars, timeDelay)
+% function Yp = human(pars, timeDelay)
+%
+% Returns the open loop transfer function from the tracking error to the
+% human's input.
+%
 % delta
 % ------
 % thetae
+%
+% Parameters
+% ----------
+% pars : double, size(1, 9)
+%   The numerical values of the controller parameters: k1, k2, k3, k4, tau,
+%   zetanm, wnm, zetafs, wfs.
+% timeDelay : logical
+%   If true a first order Pade approximation of a time delay is used.
+%
+% Returns
+% -------
+% Yp : transfer function
+%   The open loop transfer function which includes all of the controller
+%   parameters.
 
 k1 = pars(1);
 k2 = pars(2);
