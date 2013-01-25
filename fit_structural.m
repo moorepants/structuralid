@@ -25,7 +25,6 @@ dat = iddata(raw.theta, raw.theta_c, 0.0005, ...
              'InterSample', 'foh', ...
              'InputName', {'thetac'}, ...
              'OutputName', {'theta'});
-
 trDat = detrend(dat);
 
 idDat = trDat(1:60000);
@@ -50,51 +49,29 @@ display(arxmod.Name)
 pars = importdata('data/initial_parameters.csv');
 pars = pars.data(:, 2:end)';
 
-aux.timeDelay = true;
-aux.plant = modelNum;
-
-[A, B, C, D, K, X0] = structural_model(pars(:, modelNum), 0.0005, aux);
-
-mod = idgrey('structural_model', pars(:, modelNum), 'c', aux);
-mod.Name = 'Structural Guess';
-mod.InputName = dat.InputName;
-mod.OutputName = dat.OutputName;
-if estimateK
-    mod.DisturbanceModel = 'Estimate';
-    kay = '-K';
-else
-    mod.DisturbanceModel = 'Model';
-    kay = '';
-end
-
-display(sprintf('The order of the closed loop system is %u.', size(mod.A, 1)))
-display(sprintf('The gain guesses: k1=%f, k2=%f, k3=%f, k4=%f', mod.par(1:4)))
-
-fit = pem(idDat, mod, ...
-          'FixedParameter', 5:9, ...
-          'Focus', 'Stability');
-fit.Name = 'Structural Best Fit';
-uncert = diag(fit.cov(1:4, 1:4));
-display(sprintf('The identified gains: k1=%f+\\-%f, k2=%f+\\-%f, k3=%f+\\-%f, k4=%f+\\-%f\n', ...
-    fit.par(1), uncert(1), ...
-    fit.par(2), uncert(2), ...
-    fit.par(3), uncert(3), ...
-    fit.par(4), uncert(4)))
+result = find_structural_gains(idDat, pars(:, modelNum), modelNum, ...
+    'estimateK', estimateK);
 
 % create a plot directory if one doesn't already exist
 if exist('plots/', 'dir') ~= 7
     mkdir('plots/')
 end
 
-compare(valDat, arxmod, mod, fit)
+if estimateK
+    kay = '-K';
+else
+    kay = '';
+end
+
+compare(valDat, arxmod, result.mod, result.fit)
 saveas(gcf(), ['plots/compare-' num2str(modelNum) kay '.png'])
 close all
 
-bode(arxmod, 'sd', 1, 'fill', mod, fit, 'sd', 1, 'fill', {0.1, 100})
+bode(arxmod, 'sd', 1, 'fill', result.mod, result.fit, 'sd', 1, 'fill', {0.1, 100})
 saveas(gcf(), ['plots/theta-thetac-' num2str(modelNum) kay '.png'])
 close all
 
-Yh = human(fit.par, aux.timeDelay);
+Yh = human(result.fit.par, true);
 bode(Yh, {0.1, 100})
 saveas(gcf(), ['plots/delta-thetae-' num2str(modelNum) kay '.png'])
 close all
