@@ -18,15 +18,10 @@ function fit = fit_structural(filename, estimateK)
 %   The optimal model.
 
 warning off
+
 modelNum = str2num(filename(7));
-raw = load(['data/' filename]);
 
-dat = iddata(raw.theta, raw.theta_c, 0.0005, ...
-             'InterSample', 'foh', ...
-             'InputName', {'thetac'}, ...
-             'OutputName', {'theta'});
-trDat = detrend(dat);
-
+trDat = load_data(filename);
 idDat = trDat(1:60000);
 valDat = trDat(60001:end);
 
