@@ -1,3 +1,5 @@
+% This file identifies a series of models for a time varying plant.
+
 % k1, k2, k3, k4, tau, zetanm, wnm, zetafs, wfs
 
 data = load_data('jason_adapt.mat');
