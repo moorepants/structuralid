@@ -11,8 +11,10 @@ function result = find_structural_gains(data, guess, plantNum, varargin)
 % guess : double, size(1, 9)
 %   The numerical values of the controller parameters: k1, k2, k3, k4, tau,
 %   zetanm, wnm, zetafs, wfs.
-% plantNum : double, size(1, 1)
-%   A number for the plant type.
+% plantNum : integer or cell array, size(1, 3)
+%   The number of the plant type or a matrix containing the first plant
+%   number, second plant number, and the percent of the first plant, e.g.
+%   [1, 5, 0.4].
 % varargin : char value pairs, optional
 %   timeDelay : boolean, default=true
 %       true if the model should have a time delay.

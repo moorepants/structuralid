@@ -10,9 +10,12 @@ function Ys = theta_over_thetac(pars, plantNum, timeDelay)
 % Parameters
 % ----------
 % pars : double, size(1, 9)
-%   The controller parameters.
-% plantNum : integer
-%   The number of the plant type.
+%   The numerical values of the controller parameters: k1, k2, k3, k4, tau,
+%   zetanm, wnm, zetafs, wfs.
+% plantNum : integer or cell array, size(1, 3)
+%   The number of the plant type or a matrix containing the first plant
+%   number, second plant number, and the percent of the first plant, e.g.
+%   [1, 5, 0.4].
 % timeDelay : logical
 %   If true a 1st order Pade approximation of the human's time delay will be
 %   estimated.
@@ -23,5 +26,9 @@ function Ys = theta_over_thetac(pars, plantNum, timeDelay)
 %   The closed loop system transfer function.
 
 Yp = human(pars, timeDelay);
-Yc = plant(plantNum);
+if size(plantNum, 2) > 1
+    Yc = plant(plantNum{:});
+else
+    Yc = plant(plantNum);
+end
 Ys = feedback(Yp * Yc, 1);
