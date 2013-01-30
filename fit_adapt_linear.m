@@ -2,19 +2,19 @@
 
 % k1, k2, k3, k4, tau, zetanm, wnm, zetafs, wfs
 
-data = load_data('jason_adapt.mat');
-filename = 'adapt';
-guess.plantOne = [4.85, 1.79, 20, 20, 0.2, 0.707, 10, 0.707, 65];
-guess.plantTwo = [3.36, 9.49, 20, 0, 0.2, 0.707, 10, 0.707, 65];
-plantNum.plantOne = 1;
-plantNum.plantTwo = 5;
+%data = load_data('jason_adapt.mat');
+%filename = 'adapt';
+%guess.plantOne = [4.85, 1.79, 20, 20, 0.2, 0.707, 10, 0.707, 65];
+%guess.plantTwo = [3.36, 9.49, 20, 0, 0.2, 0.707, 10, 0.707, 65];
+%plantNum.plantOne = 1;
+%plantNum.plantTwo = 5;
 
-%data = load_data('adapt_hard.mat');
-%filename = 'hard-adapt';
-%guess.plantOne = [1.23, 0.354, 0.2, 20.0, 0.2, 0.707, 10, 0.707, 65];
-%guess.plantTwo = [4.85, 1.79, 20, 20, 0.2, 0.707, 10, 0.707, 65];
-%plantNum.plantOne = 6;
-%plantNum.plantTwo = 1;
+data = load_data('adapt_hard.mat');
+filename = 'hard-adapt';
+guess.plantOne = [1.23, 0.354, 0.2, 20.0, 0.2, 0.707, 10, 0.707, 65];
+guess.plantTwo = [4.85, 1.79, 20, 20, 0.2, 0.707, 10, 0.707, 65];
+plantNum.plantOne = 6;
+plantNum.plantTwo = 1;
 
 t = [0, 30, 40, 50, 60, 90];
 
@@ -31,19 +31,28 @@ m = gainSlopeOffset(1:4);
 b = gainSlopeOffset(5:8);
 
 for i = 1:length(sections)
+
     if strcmp(sections{i}, sections{1}) || strcmp(sections{i}, sections{end})
         display('boo')
     else
-       currentGuess = m .* (t(i) + t(i + 1)) / 2 + b;
-       guess.(sections{i}) = [currentGuess', guess.plantOne(5:end)];
-       percent = ((t(i) + t(i + 1)) / 2 - t(2)) / (t(5) - t(2));
-       plantNum.(sections{i}) = {plantNum.plantOne, plantNum.plantTwo, percent};
+        if i > 1
+            % use the best fit gains from the previous section
+            guess.(sections{i}) = result.(sections{i - 1}).fit.par;
+        else
+            currentGuess = m .* (t(i) + t(i + 1)) / 2 + b;
+            guess.(sections{i}) = [currentGuess', guess.plantOne(5:end)];
+        end
+        percent = ((t(i) + t(i + 1)) / 2 - t(2)) / (t(5) - t(2));
+        plantNum.(sections{i}) = {plantNum.plantOne, plantNum.plantTwo, percent};
     end
+
     result.(sections{i}) = find_structural_gains(secData.(sections{i}), ...
-        guess.(sections{i}), plantNum.(sections{i}));
+        guess.(sections{i}), plantNum.(sections{i}), 'warning', false);
+
     [yh, vaf, x0] = compare(secData.(sections{i}), result.(sections{i}).fit);
     result.(sections{i}).vaf = vaf(1, 1, 1);
     display(sprintf('The self validation VAF is %f.', vaf(1, 1, 1)))
+
     p = plantNum.(sections{i});
     if size(plantNum.(sections{i}), 2) > 1
         result.(sections{i}).plant = plant(p{:});
