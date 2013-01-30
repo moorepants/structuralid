@@ -29,3 +29,7 @@ Now open Matlab and execute `run_all.m` to run the basic identification.
 
 The plots are generated in the `plots` directory and the results are printed to
 the terminal.
+
+Also, the `fit_adadpt.m` and `fit_adapt_linear.m` can be run to attempt to
+identify the time varying dynamics. `fit_adapt.m` currenlty does not home in on
+any results.
