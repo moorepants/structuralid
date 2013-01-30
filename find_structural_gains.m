@@ -22,6 +22,8 @@ function result = find_structural_gains(data, guess, plantNum, varargin)
 %       true if the process noise matrix should be estimated.
 %   display : boolean, default=true
 %       true if the results should be displayed to the terminal.
+%   warning : boolean, default=true
+%       If false the warnings in the pem estimator will not be shown.
 
 parser = inputParser;
 parser.addRequired('data');
@@ -30,15 +32,14 @@ parser.addRequired('plantNum');
 parser.addParamValue('timeDelay', true);
 parser.addParamValue('estimateK', true);
 parser.addParamValue('display', true);
+parser.addParamValue('warning', true);
 parser.parse(data, guess, plantNum, varargin{:});
 args = parser.Results;
 
 aux.timeDelay = args.timeDelay;
 aux.plant = args.plantNum;
 
-[A, B, C, D, K, X0] = structural_model(args.guess, args.data.Ts, aux);
-
-mod = idgrey('structural_model', guess, 'c', aux);
+mod = idgrey('structural_model', args.guess, 'c', aux);
 mod.Name = 'Structural Guess';
 mod.InputName = args.data.InputName;
 mod.OutputName = args.data.OutputName;
@@ -53,9 +54,39 @@ if args.display
     display(sprintf('The gain guesses: k1=%f, k2=%f, k3=%f, k4=%f', mod.par(1:4)))
 end
 
-fit = pem(args.data, mod, ...
-          'FixedParameter', 5:9, ...
-          'Focus', 'Stability');
+% TODO: Try other initial guesses if the VAF is low to try to avoid local
+% minima.
+if ~args.warning
+    warning off
+end
+while true
+    try
+        fit = pem(args.data, mod, ...
+                  'FixedParameter', 5:9, ...
+                  'Focus', 'Stability');
+        break;
+    catch err
+        if (strcmp(err.identifier, 'Ident:estimation:InvalidInitialModel'))
+            while true
+                try
+                    mod = init(mod, [ones(1, 4), zeros(1, 5)], [], 'p');
+                    break;
+                catch err
+                    if (strcmp(err.identifier,'Ident:idmodel:idgreySSDataCheck3'))
+                        continue;
+                    else
+                        rethrow(err);
+                    end
+                end
+            end
+            display(sprintf('Trying new guess: k1=%f, k2=%f, k3=%f, k4=%f', mod.par(1:4)))
+        else
+            rethrow(err);
+        end
+    end
+end
+warning on
+
 fit.Name = 'Structural Best Fit';
 uncert = diag(fit.cov(1:4, 1:4));
 
