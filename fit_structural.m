@@ -17,8 +17,6 @@ function fit = fit_structural(filename, estimateK)
 % fit : idgrey
 %   The optimal model.
 
-warning off
-
 modelNum = str2num(filename(7));
 
 trDat = load_data(filename);
@@ -45,7 +43,7 @@ pars = importdata('data/initial_parameters.csv');
 pars = pars.data(:, 2:end)';
 
 result = find_structural_gains(idDat, pars(:, modelNum), modelNum, ...
-    'estimateK', estimateK);
+    'estimateK', estimateK, 'warning', false);
 
 % create a plot directory if one doesn't already exist
 if exist('plots/', 'dir') ~= 7

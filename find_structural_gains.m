@@ -24,6 +24,9 @@ function result = find_structural_gains(data, guess, plantNum, varargin)
 %       true if the results should be displayed to the terminal.
 %   warning : boolean, default=true
 %       If false the warnings in the pem estimator will not be shown.
+%   randomGuess : boolean, default=false
+%       If true, then random initial guesses will be tried based on guess
+%       until a stable predictor is found.
 
 parser = inputParser;
 parser.addRequired('data');
@@ -33,6 +36,7 @@ parser.addParamValue('timeDelay', true);
 parser.addParamValue('estimateK', true);
 parser.addParamValue('display', true);
 parser.addParamValue('warning', true);
+parser.addParamValue('randomGuess', false);
 parser.parse(data, guess, plantNum, varargin{:});
 args = parser.Results;
 
@@ -66,7 +70,8 @@ while true
                   'Focus', 'Stability');
         break;
     catch err
-        if (strcmp(err.identifier, 'Ident:estimation:InvalidInitialModel'))
+        if (strcmp(err.identifier, ...
+            'Ident:estimation:InvalidInitialModel')) & args.randomGuess
             while true
                 try
                     mod = init(mod, [ones(1, 4), zeros(1, 5)], [], 'p');

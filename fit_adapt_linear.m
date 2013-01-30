@@ -47,7 +47,8 @@ for i = 1:length(sections)
     end
 
     result.(sections{i}) = find_structural_gains(secData.(sections{i}), ...
-        guess.(sections{i}), plantNum.(sections{i}), 'warning', false);
+        guess.(sections{i}), plantNum.(sections{i}), 'warning', false, ...
+        'randomGuess', true);
 
     [yh, vaf, x0] = compare(secData.(sections{i}), result.(sections{i}).fit);
     result.(sections{i}).vaf = vaf(1, 1, 1);
