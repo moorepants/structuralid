@@ -3,6 +3,9 @@ control model for simple line tracking tasks.
 
 Dependencies
 ------------
+
+I wrote the software with these versions, but older versions may work too.
+
 - Matlab 7.10.0.499 (R2010a)
 - Control System Toolbox Version 8.5 (R2010a)
 - Matlab System Identification Toolbox Version 7.4 (R2010a)
@@ -20,7 +23,7 @@ Then get the data and extract it to the data directory:
 $ wget http://figshare.com/media/download/98814/100241 -O structuralid-data.tar.bz2
 $ tar -xjf structuralid-data.tar.bz2
 
-Now open Matlab and execute `run_all.m`
+Now open Matlab and execute `run_all.m` to run the basic identification.
 
 >> run_all
 
