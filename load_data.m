@@ -10,7 +10,7 @@ function data = load_data(filename, varargin)
 %   Filename for the data file.
 % varargin : char value pairs, optional
 %   sampleTime : double, default=0.0005
-%   detread : boolean, default=true
+%   detrend : boolean, default=true
 %   directory : char, default='data'
 
 parser = inputParser;

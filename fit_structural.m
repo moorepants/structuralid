@@ -71,3 +71,5 @@ close all
 bode(Yh * plant(modelNum), {0.1, 100})
 saveas(gcf(), ['plots/theta-thetae-' num2str(modelNum) kay '.png'])
 close all
+
+fit = result.fit;

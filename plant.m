@@ -39,6 +39,7 @@ function Yc = plant(varargin)
 %   4 : 10 / (s + 10)
 %   5 : 5 / (s + 10)
 %   6 : 10 / (s^2 +.2 * s)
+%   7 : 747 model in data/jason_7.mat
 %
 % Option 2
 % --------
@@ -70,6 +71,11 @@ elseif num == 5;
     p = tf(5.0, [1.0, 10.0]);
 elseif num == 6;
     p = tf(10.0, [1.0, 0.2, 0.0]);
+elseif num == 7;
+    % load the 747 model
+    data = load('data/jason_7.mat');
+    [num, den] = ss2tf(data.a, data.b, data.c, data.d);
+    p = tf(num, den);
 else
     display('Invalid plant number.')
 end
