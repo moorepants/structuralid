@@ -3,7 +3,7 @@ function run_all()
 %
 % Runs all of the identifications.
 
-for i = [1:4, 7]
+for i = [1:4, 7:8]
     for j = 0:1
         if j == 0
             kay = 'no';

@@ -20,8 +20,8 @@ function fit = fit_structural(filename, estimateK)
 modelNum = str2num(filename(7));
 
 trDat = load_data(filename);
-idDat = trDat(1:60000);
-valDat = trDat(60001:end);
+idDat = (1:60000);
+valDat = (60001:end);
 
 %advice(idDat)
 %[FBCK, FBCK0, NUDIR] = feedback(dat)
