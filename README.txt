@@ -23,9 +23,9 @@ Then get the data and extract it to the data directory:
 $ wget http://figshare.com/media/download/98814/100241 -O structuralid-data.tar.bz2
 $ tar -xjf structuralid-data.tar.bz2
 
-Now open Matlab and execute `run_all.m` to run the basic identification.
+Now open Matlab and execute `run.m` to run the basic identification.
 
->> run_all
+>> run([1, 2, 3, 4, 7, 8], 'all', 'both')
 
 The plots are generated in the `plots` directory and the results are printed to
 the terminal.
@@ -33,3 +33,9 @@ the terminal.
 Also, the `fit_adadpt.m` and `fit_adapt_linear.m` can be run to attempt to
 identify the time varying dynamics. `fit_adapt.m` currenlty does not home in on
 any results.
+
+TODO
+----
+
+- Identify the controller without the plant so that the noise matrix is smaller.
+- Identify ARMAX models of the controller.

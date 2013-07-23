@@ -7,7 +7,7 @@ function fit = fit_structural(filename, estimateK)
 % ----------
 % filename : char
 %   The filename of the file in the `data` folder. For example
-%   `jason_1.mat`.
+%   `plant_01_run_01.mat`.
 % estimateK : logical
 %   If true process and measurement noise will be estimated in terms of a
 %   Kalman gain matrix.
@@ -17,11 +17,11 @@ function fit = fit_structural(filename, estimateK)
 % fit : idgrey
 %   The optimal model.
 
-modelNum = str2num(filename(7));
+plant_num = str2num(filename(7:8));
 
 trDat = load_data(filename);
-idDat = (1:60000);
-valDat = (60001:end);
+idDat = trDat(1:60000);
+valDat = trDat(60001:end);
 
 %advice(idDat)
 %[FBCK, FBCK0, NUDIR] = feedback(dat)
@@ -34,42 +34,17 @@ selections = struc(1:9, 1:9, 1:30);
 loss = arxstruc(idDat, valDat, selections);
 best = selstruc(loss, 0);
 
-arxmod = arx(idDat, best);
-arxmod.Name = sprintf('Best ARX [na=%u, nb=%u, nk=%u]', best);
-display(arxmod.Name)
+models.arxmod = arx(idDat, best);
+models.arxmod.Name = sprintf('Best ARX [na=%u, nb=%u, nk=%u]', best);
+display(models.arxmod.Name)
 
 % build a grey box model
 pars = importdata('data/initial_parameters.csv');
 pars = pars.data(:, 2:end)';
 
-result = find_structural_gains(idDat, pars(:, modelNum), modelNum, ...
+models.result = find_structural_gains(idDat, pars(:, plant_num), plant_num, ...
     'estimateK', estimateK, 'warning', false);
 
-% create a plot directory if one doesn't already exist
-if exist('plots/', 'dir') ~= 7
-    mkdir('plots/')
-end
+generate_plots(plant_num, str2num(filename(14:15)), estimateK, valDat, models)
 
-if estimateK
-    kay = '-K';
-else
-    kay = '';
-end
-
-compare(valDat, arxmod, result.mod, result.fit)
-saveas(gcf(), ['plots/compare-' num2str(modelNum) kay '.png'])
-close all
-
-bode(arxmod, 'sd', 1, 'fill', result.mod, result.fit, 'sd', 1, 'fill', {0.1, 100})
-saveas(gcf(), ['plots/theta-thetac-' num2str(modelNum) kay '.png'])
-close all
-
-Yh = human(result.fit.par, true);
-bode(Yh, {0.1, 100})
-saveas(gcf(), ['plots/delta-thetae-' num2str(modelNum) kay '.png'])
-close all
-bode(Yh * plant(modelNum), {0.1, 100})
-saveas(gcf(), ['plots/theta-thetae-' num2str(modelNum) kay '.png'])
-close all
-
-fit = result.fit;
+fit = models.result.fit;

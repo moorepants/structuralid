@@ -1,5 +1,5 @@
 function test_plant
-% this use the matlab_xunit framework
+% this uses the matlab_xunit framework
 % add the path to xunit and run "runtests" at the command prompt
 
 addpath('..')
