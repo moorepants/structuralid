@@ -1,14 +1,14 @@
 These files attempt to identify the gains in the structural human operator
-control model for simple line tracking tasks.
+control model for simple line tracking tasks with different plants.
 
 Dependencies
 ------------
 
 I wrote the software with these versions, but older versions may work too.
 
-- Matlab 7.10.0.499 (R2010a)
-- Control System Toolbox Version 8.5 (R2010a)
-- Matlab System Identification Toolbox Version 7.4 (R2010a)
+- Matlab 8.1.0.604 (R2013a)
+- Control System Toolbox Version 9.5 (R2013a)
+- Matlab System Identification Toolbox Version 8.2 (R2013a)
 
 Use
 ---
