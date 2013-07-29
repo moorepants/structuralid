@@ -20,7 +20,7 @@ $ cd structuralid
 
 Then get the data and extract it to the data directory:
 
-$ wget http://figshare.com/media/download/98814/100241 -O structuralid-data.tar.bz2
+$ wget http://files.figshare.com/1134580/structuralid_data.tar.bz2
 $ tar -xjf structuralid-data.tar.bz2
 
 Now open Matlab and execute `run.m` to run the basic identification.
