@@ -1,5 +1,5 @@
-function fit = fit_structural(filename, estimateK)
-% function fit = fit_structural(filename, estimateK)
+function models = fit_structural(filename, estimateK)
+% function models = fit_structural(filename, estimateK)
 %
 % Returns the optimal structural model for a given data set.
 %
@@ -14,8 +14,13 @@ function fit = fit_structural(filename, estimateK)
 %
 % Returns
 % -------
-% fit : idgrey
-%   The optimal model.
+% models : structure
+%   arxmod :
+%       The optimal ARX model.
+%   mod : idgrey
+%       The model with the initial guesses.
+%   fit : idgrey
+%       The optimal grey box model.
 
 plant_num = str2num(filename(7:8));
 
@@ -29,7 +34,6 @@ valDat = trDat(60001:end);
 nk = delayest(idDat);
 
 % check out an ARX model
-
 selections = struc(1:9, 1:9, 1:30);
 loss = arxstruc(idDat, valDat, selections);
 best = selstruc(loss, 0);
@@ -42,9 +46,11 @@ display(models.arxmod.Name)
 pars = importdata('data/initial_parameters.csv');
 pars = pars.data(:, 2:end)';
 
-models.result = find_structural_gains(idDat, pars(:, plant_num), plant_num, ...
+result = find_structural_gains(idDat, pars(:, plant_num), plant_num, ...
     'estimateK', estimateK, 'warning', false);
 
-generate_plots(plant_num, str2num(filename(14:15)), estimateK, valDat, models)
+models.fit = result.fit;
+models.mod = result.mod;
+models.uncert = result.uncert;
 
-fit = models.result.fit;
+generate_plots(plant_num, str2num(filename(14:15)), estimateK, valDat, models)

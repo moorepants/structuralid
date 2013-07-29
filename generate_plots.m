@@ -1,6 +1,9 @@
 function generate_plots(plant_num, run_num, estimate_k, validation_data, models)
 % function generate_plots(plant_num, run_num, estimate_k, validation_data, models)
 %
+% Generates time series comparison and Bode plots for the identifications
+% and saves the tabular results to file.
+%
 % Parameters
 % ----------
 % plant_num : double
@@ -32,7 +35,7 @@ filename_beg = sprintf('%s/', plot_directory);
 filename_end = sprintf('plant-%0.2d-run-%0.2d%s.png', plant_num, run_num, kay);
 
 [y, fit, x0] = compare(validation_data, models.arxmod, ...
-    models.result.mod, models.result.fit);
+    models.mod, models.fit);
 
 fig = figure('visible','off');
 hold on
@@ -45,8 +48,8 @@ xlabel('Time [s]')
 ylabel('$\theta$ [rad]')
 leg_labels = {'Measured',
               sprintf('%s %2.2f%%', models.arxmod.Name, fit{1}),
-              sprintf('%s %2.2f%%', models.result.mod.Name, fit{2}),
-              sprintf('%s %2.2f%%', models.result.fit.Name, fit{3})};
+              sprintf('%s %2.2f%%', models.mod.Name, fit{2}),
+              sprintf('%s %2.2f%%', models.fit.Name, fit{3})};
 legend(leg_labels)
 saveas(gcf(), [filename_beg 'compare-' filename_end])
 close all
@@ -57,13 +60,13 @@ close all
 % my screen and I can't do any other work.
 
 % closed loop response of the entire system
-bode(models.arxmod, 'sd', 1, 'fill', models.result.mod, ...
-    models.result.fit, 'sd', 1, 'fill', {0.1, 100})
+bode(models.arxmod, 'sd', 1, 'fill', models.mod, ...
+    models.fit, 'sd', 1, 'fill', {0.1, 100})
 saveas(gcf(), [filename_beg 'theta-thetac-' filename_end])
 close all
 
 % the controller: error in theta (pitch) to stick
-Yh = human(models.result.fit.par, true);
+Yh = human(models.fit.par, true);
 bode(Yh, {0.1, 100})
 saveas(gcf(), [filename_beg 'delta-thetae-' filename_end])
 close all
@@ -72,3 +75,6 @@ close all
 bode(Yh * plant(plant_num), {0.1, 100})
 saveas(gcf(), [filename_beg 'theta-thetae-' filename_end])
 close all
+
+save_results_table('results.csv', plant_num, run_num, estimate_k, ...
+    models, fit{3}, fit{1})

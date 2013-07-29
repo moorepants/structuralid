@@ -14,7 +14,7 @@ function run(plants, runs, estimate_noise)
 %   matrix will be set to a zero matrix. If 'both', then the identifications
 %   will be run for both cases.
 
-% TODO : give and 'all' option for the plants
+% TODO : give an 'all' option for the plants
 
 for plant_indice = 1:length(plants)
 
@@ -47,7 +47,7 @@ for plant_indice = 1:length(plants)
             display(sprintf('Plant #%u,  Run #%u, K estimated: %s', ...
                 plant_num, run_num, kay))
 
-            fit_structural(['plant_' sprintf('%0.2d', plant_num) '_run_' ...
+            models = fit_structural(['plant_' sprintf('%0.2d', plant_num) '_run_' ...
                 sprintf('%0.2d', run_num) '.mat'], j);
             display(repmat('-', 1, 79))
         end
